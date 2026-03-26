@@ -1,0 +1,210 @@
+/*
+ * ============================================================
+ * Custom Open WebUI Theme
+ * Font: JetBrains Mono (terminal-styled)
+ * Accent: Yellowish sub-color
+ * Faded model parameter display
+ * ============================================================
+ */
+
+/* --- Import JetBrains Mono from Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+/* --- CSS Custom Properties --- */
+:root {
+  --accent-yellow: #f5c518;
+  --accent-yellow-hover: #e0b200;
+  --accent-yellow-light: #fef3c7;
+  --accent-yellow-dark: #ca8a04;
+  --accent-yellow-subtle: rgba(245, 197, 24, 0.15);
+  --accent-yellow-glow: rgba(245, 197, 24, 0.3);
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+}
+
+/* --- Global Font Override --- */
+*,
+body,
+html,
+input,
+textarea,
+select,
+button {
+  font-family: var(--font-mono) !important;
+}
+
+/* --- Code blocks --- */
+pre,
+code,
+.hljs,
+[class*="code"],
+.cm-editor,
+.cm-content {
+  font-family: var(--font-mono) !important;
+}
+
+/* ============================================================
+ * FADED MODEL PARAMETERS
+ * Model names use Unicode markers ⸨ and ⸩ around the param size.
+ * We inject CSS that finds these markers and fades the text.
+ * Since CSS alone can't target text content, we use a JS snippet
+ * (loaded via the setup script) to wrap ⸨...⸩ in <span> tags.
+ * The CSS below styles those spans.
+ * ============================================================ */
+
+/* Faded parameter text (wrapped by JS in .model-param spans) */
+.model-param {
+  opacity: 0.4 !important;
+  font-weight: 300 !important;
+  font-size: 0.85em !important;
+  letter-spacing: 0.02em;
+}
+
+/* Hide the Unicode bracket markers themselves */
+.model-param-bracket {
+  font-size: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ============================================================
+ * ACCENT COLOR OVERRIDES
+ * ============================================================ */
+
+/* --- Send Message Button --- */
+#send-message-button {
+  background-color: var(--accent-yellow) !important;
+  color: #1a1a1a !important;
+  transition: background-color 0.2s ease;
+}
+
+#send-message-button:hover {
+  background-color: var(--accent-yellow-hover) !important;
+}
+
+/* --- Primary Action Buttons --- */
+button[type="submit"],
+button.primary,
+.btn-primary {
+  background-color: var(--accent-yellow) !important;
+  color: #1a1a1a !important;
+  border-color: var(--accent-yellow) !important;
+}
+
+button[type="submit"]:hover,
+button.primary:hover,
+.btn-primary:hover {
+  background-color: var(--accent-yellow-hover) !important;
+}
+
+/* --- Save / Confirm buttons --- */
+button.px-3\.5.py-1\.5.text-sm.font-medium.bg-black.hover\:bg-neutral-900.text-white.dark\:bg-white.dark\:text-black.dark\:hover\:bg-neutral-100.transition.rounded-full {
+  background-color: var(--accent-yellow) !important;
+  color: #1a1a1a !important;
+}
+
+/* --- Toggle Switches --- */
+[role="switch"][aria-checked="true"] {
+  background-color: var(--accent-yellow) !important;
+}
+
+/* --- Voice Mode Button --- */
+[aria-label="Voice mode"] {
+  background-color: var(--accent-yellow) !important;
+  color: #1a1a1a !important;
+}
+
+/* --- Tooltips --- */
+.tippy-content {
+  background-color: #2a2a2a !important;
+  border-color: var(--accent-yellow) !important;
+  font-family: var(--font-mono) !important;
+}
+
+.tippy-box {
+  background-color: #2a2a2a !important;
+  border: 1px solid var(--accent-yellow) !important;
+}
+
+.tippy-box[data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #2a2a2a !important;
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #2a2a2a !important;
+}
+
+/* --- Sidebar Active Item --- */
+#sidebar .selected,
+#sidebar [class*="active"],
+#sidebar .bg-gray-100,
+#sidebar .dark\:bg-gray-900 {
+  border-left: 3px solid var(--accent-yellow) !important;
+}
+
+/* --- Links --- */
+a:hover {
+  color: var(--accent-yellow) !important;
+}
+
+/* --- Selection Highlight --- */
+::selection {
+  background-color: var(--accent-yellow-subtle) !important;
+  color: inherit !important;
+}
+
+/* --- Scrollbar (Webkit) --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent-yellow-hover);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-yellow);
+}
+
+/* --- Focus Ring --- */
+*:focus-visible {
+  outline-color: var(--accent-yellow) !important;
+  box-shadow: 0 0 0 2px var(--accent-yellow-glow) !important;
+}
+
+/* --- Dropdown Highlight --- */
+[role="listbox"] [role="option"][aria-selected="true"],
+[role="listbox"] [role="option"]:hover {
+  background-color: var(--accent-yellow-subtle) !important;
+}
+
+/* --- Chat Input Focus --- */
+#chat-input:focus,
+#chat-textarea:focus,
+textarea:focus {
+  border-color: var(--accent-yellow) !important;
+  box-shadow: 0 0 0 2px var(--accent-yellow-glow) !important;
+}
+
+/* --- Loading Spinner --- */
+.animate-spin,
+[class*="spinner"],
+[class*="loading"] {
+  color: var(--accent-yellow) !important;
+}
+
+/* --- New Chat Button --- */
+#sidebar button[aria-label="New Chat"],
+#sidebar a[href="/"] {
+  transition: background-color 0.2s ease;
+}
+
+#sidebar button[aria-label="New Chat"]:hover,
+#sidebar a[href="/"]:hover {
+  background-color: var(--accent-yellow-subtle) !important;
+}
