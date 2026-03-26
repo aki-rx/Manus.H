@@ -1,6 +1,6 @@
 # Open WebUI — Pre-Configured Deployment
 
-A ready-to-deploy [Open WebUI](https://github.com/open-webui/open-webui) setup with **Docker Compose**, pre-configured for **OpenRouter** and **Ollama**, featuring a custom terminal-styled theme and automated model renaming.
+A ready-to-deploy [Open WebUI](https://github.com/open-webui/open-webui) setup with **Docker Compose**, pre-configured for **OpenRouter** and **Ollama**, featuring a custom terminal-styled theme, provider-colored model badges, and automated model renaming.
 
 ---
 
@@ -11,10 +11,12 @@ A ready-to-deploy [Open WebUI](https://github.com/open-webui/open-webui) setup w
 | **Docker Compose** | Single-command deployment of Open WebUI + Ollama |
 | **OpenRouter** | Pre-wired to `https://openrouter.ai/api/v1` with auto-routing model |
 | **Ollama** | Local model server running alongside Open WebUI |
-| **Custom Theme** | JetBrains Mono font, yellowish accent color, faded model parameters |
+| **Custom Theme** | JetBrains Mono font, yellowish accent color |
+| **Provider Colors** | Model entries color-coded by provider (OpenAI, Anthropic, Google) |
+| **Faded Params** | Parameter sizes (e.g. 70B) shown faded next to model names |
 | **Admin Account** | Auto-created on first launch via environment variables |
-| **Model Renamer** | Script to rename models to a clean `ModelName 70B` format with faded params |
-| **Auto-Routing** | Default model set to `openrouter/auto` for intelligent model selection |
+| **Model Renamer** | Script to rename models to a clean display format |
+| **Auto-Routing** | Default model set to `openrouter/auto` for intelligent selection |
 
 ---
 
@@ -79,8 +81,6 @@ The setup script handles everything interactively — creating `.env`, prompting
 
 ## Custom Theme
 
-The theme applies three main customizations:
-
 ### JetBrains Mono Font
 
 All UI text uses [JetBrains Mono](https://www.jetbrains.com/mono/), a monospaced typeface designed for developers. It loads from Google Fonts and applies globally across the interface, including chat messages, code blocks, and the sidebar.
@@ -91,7 +91,22 @@ Interactive elements use a warm yellow (`#f5c518`) as the accent color. This inc
 
 ### Faded Model Parameters
 
-Model names display the parameter count (e.g., `70B`) in a faded, lighter style next to the model name. This keeps the interface clean while still showing model size at a glance. The fading is handled by a small JavaScript observer (`model_param_fader.js`) that watches for Unicode markers in model names and wraps them in styled `<span>` elements.
+Model names display the parameter count (e.g., `70B`) in a faded, lighter style next to the model name. This keeps the interface clean while still showing model size at a glance.
+
+---
+
+## Provider Background Colors
+
+Model entries in the selector are automatically color-coded by provider. A small JavaScript observer detects the provider from the model name and applies a `data-provider` attribute that CSS uses for styling.
+
+| Provider | Color | Detection Keywords |
+|---|---|---|
+| **OpenAI / ChatGPT** | Greyish white background | `gpt`, `chatgpt`, `openai`, `o1`, `o3`, `o4` |
+| **Anthropic / Claude** | Warm orange tint | `claude`, `anthropic` |
+| **Google / Gemini** | Blue-purple-red gradient | `gemini`, `google`, `palm` |
+| **Others** | No background color | Everything else |
+
+The colors are subtle and semi-transparent, working well in both light and dark modes. Each colored entry also gets a matching left border accent for quick visual scanning.
 
 ---
 
@@ -101,13 +116,15 @@ The renamer script converts model IDs into human-readable names:
 
 | Raw Model ID | Display Name |
 |---|---|
-| `meta-llama/llama-3.1-70b-instruct` | Llama 3.1 **⸨70B⸩** |
-| `mistral:7b` | Mistral **⸨7B⸩** |
+| `meta-llama/llama-3.1-70b-instruct` | Llama 3.1 *70B* |
+| `mistral:7b` | Mistral *7B* |
 | `anthropic/claude-3.5-sonnet` | Claude 3.5 Sonnet |
+| `openai/gpt-4o` | Gpt 4o |
+| `google/gemini-2.0-flash` | Gemini 2.0 Flash |
 | `openrouter/auto` | Auto Router |
-| `deepseek/deepseek-r1:32b` | Deepseek R1 **⸨32B⸩** |
+| `deepseek/deepseek-r1:32b` | Deepseek R1 *32B* |
 
-The text between **⸨** and **⸩** is rendered faded in the UI by the custom CSS and JavaScript.
+The italicized parameter sizes appear faded in the actual UI.
 
 ---
 
@@ -117,7 +134,7 @@ The text between **⸨** and **⸩** is rendered faded in the UI by the custom C
 open-webui-setup/
 ├── docker-compose.yml        # Docker Compose services (Open WebUI + Ollama)
 ├── Dockerfile                # Custom Open WebUI image with theme injection
-├── custom.css                # JetBrains Mono + yellow accent + faded params
+├── custom.css                # JetBrains Mono + yellow accent + provider colors
 ├── .env.example              # Template config (safe to commit)
 ├── .env                      # Your actual config (git-ignored)
 ├── .gitignore
@@ -126,7 +143,7 @@ open-webui-setup/
 └── scripts/
     ├── setup.sh              # Interactive first-time setup
     ├── rename_models.py      # Model display name renamer
-    └── model_param_fader.js  # DOM observer for fading param text
+    └── model_param_fader.js  # DOM observer for fading params + provider colors
 ```
 
 ---
@@ -186,6 +203,8 @@ Your data persists in Docker volumes (`open_webui_data` and `ollama_data`), so u
 ## Troubleshooting
 
 **Models not loading from OpenRouter:** Verify your `OPENAI_API_KEY` in `.env` is a valid OpenRouter key. Check logs with `docker compose logs open-webui`.
+
+**Provider colors not showing:** The JS observer needs model names to contain provider keywords (gpt, claude, gemini, etc.). Run the model renamer first, or the colors will apply based on raw model IDs.
 
 **Admin account not created:** This only happens on a fresh database. If you've run before, the account already exists. To reset, stop containers and remove the volume: `docker volume rm open-webui-setup_open_webui_data`.
 

@@ -1,9 +1,9 @@
 /*
  * ============================================================
  * Custom Open WebUI Theme
- * Font: JetBrains Mono (terminal-styled)
- * Accent: Yellowish sub-color
- * Faded model parameter display
+ * Font:    JetBrains Mono (terminal-styled)
+ * Accent:  Yellowish sub-color
+ * Models:  Faded parameters + provider background colors
  * ============================================================
  */
 
@@ -19,9 +19,47 @@
   --accent-yellow-subtle: rgba(245, 197, 24, 0.15);
   --accent-yellow-glow: rgba(245, 197, 24, 0.3);
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+
+  /* Provider colors */
+  --provider-openai-bg: rgba(220, 220, 220, 0.35);
+  --provider-openai-border: rgba(180, 180, 180, 0.5);
+  --provider-anthropic-bg: rgba(255, 160, 60, 0.2);
+  --provider-anthropic-border: rgba(230, 130, 40, 0.4);
+  --provider-google-bg: linear-gradient(135deg,
+    rgba(66, 133, 244, 0.15),
+    rgba(155, 89, 182, 0.15),
+    rgba(234, 67, 53, 0.15));
+  --provider-google-border-color: rgba(155, 89, 182, 0.35);
 }
 
-/* --- Global Font Override --- */
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --provider-openai-bg: rgba(200, 200, 200, 0.1);
+    --provider-openai-border: rgba(160, 160, 160, 0.25);
+    --provider-anthropic-bg: rgba(255, 160, 60, 0.12);
+    --provider-anthropic-border: rgba(230, 130, 40, 0.25);
+    --provider-google-bg: linear-gradient(135deg,
+      rgba(66, 133, 244, 0.1),
+      rgba(155, 89, 182, 0.1),
+      rgba(234, 67, 53, 0.1));
+    --provider-google-border-color: rgba(155, 89, 182, 0.2);
+  }
+}
+
+/* Also handle Open WebUI's own dark class */
+.dark {
+  --provider-openai-bg: rgba(200, 200, 200, 0.1);
+  --provider-openai-border: rgba(160, 160, 160, 0.25);
+  --provider-anthropic-bg: rgba(255, 160, 60, 0.12);
+  --provider-anthropic-border: rgba(230, 130, 40, 0.25);
+  --provider-google-border-color: rgba(155, 89, 182, 0.2);
+}
+
+/* ============================================================
+ * GLOBAL FONT
+ * ============================================================ */
+
 *,
 body,
 html,
@@ -32,7 +70,6 @@ button {
   font-family: var(--font-mono) !important;
 }
 
-/* --- Code blocks --- */
 pre,
 code,
 .hljs,
@@ -44,30 +81,66 @@ code,
 
 /* ============================================================
  * FADED MODEL PARAMETERS
- * Model names use Unicode markers ⸨ and ⸩ around the param size.
- * We inject CSS that finds these markers and fades the text.
- * Since CSS alone can't target text content, we use a JS snippet
- * (loaded via the setup script) to wrap ⸨...⸩ in <span> tags.
- * The CSS below styles those spans.
+ * Text between ⸨ and ⸩ is wrapped in .model-param by JS
  * ============================================================ */
 
-/* Faded parameter text (wrapped by JS in .model-param spans) */
 .model-param {
-  opacity: 0.4 !important;
+  opacity: 0.38 !important;
   font-weight: 300 !important;
   font-size: 0.85em !important;
   letter-spacing: 0.02em;
-}
-
-/* Hide the Unicode bracket markers themselves */
-.model-param-bracket {
-  font-size: 0 !important;
-  width: 0 !important;
-  overflow: hidden !important;
+  margin-left: 0.3em;
 }
 
 /* ============================================================
- * ACCENT COLOR OVERRIDES
+ * PROVIDER BACKGROUND COLORS
+ * Applied via data-provider attribute set by JS
+ * ============================================================ */
+
+/* --- OpenAI / ChatGPT: Greyish White --- */
+[data-provider="openai"] {
+  background: var(--provider-openai-bg) !important;
+  border-left: 3px solid var(--provider-openai-border) !important;
+  border-radius: 6px !important;
+}
+
+/* --- Anthropic / Claude: Orange --- */
+[data-provider="anthropic"] {
+  background: var(--provider-anthropic-bg) !important;
+  border-left: 3px solid var(--provider-anthropic-border) !important;
+  border-radius: 6px !important;
+}
+
+/* --- Google / Gemini: Blue-purple-red gradient --- */
+[data-provider="google"] {
+  background: linear-gradient(135deg,
+    rgba(66, 133, 244, 0.15),
+    rgba(155, 89, 182, 0.15),
+    rgba(234, 67, 53, 0.15)) !important;
+  border-left: 3px solid var(--provider-google-border-color) !important;
+  border-radius: 6px !important;
+}
+
+/* Dark mode gradient for Google */
+.dark [data-provider="google"] {
+  background: linear-gradient(135deg,
+    rgba(66, 133, 244, 0.1),
+    rgba(155, 89, 182, 0.1),
+    rgba(234, 67, 53, 0.1)) !important;
+}
+
+/* --- Others: No special color (transparent) --- */
+[data-provider="other"] {
+  /* intentionally no background override */
+}
+
+/* Smooth transition for provider colors appearing */
+[data-provider] {
+  transition: background 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* ============================================================
+ * ACCENT COLOR OVERRIDES (Yellow)
  * ============================================================ */
 
 /* --- Send Message Button --- */
