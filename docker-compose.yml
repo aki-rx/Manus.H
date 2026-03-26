@@ -28,10 +28,29 @@ services:
       - open_webui_data:/app/backend/data
     depends_on:
       - ollama
-    env_file:
-      - .env
     environment:
+      # --- Connection ---
       - OLLAMA_BASE_URL=http://ollama:11434
+      - OPENAI_API_BASE_URL=${OPENAI_API_BASE_URL:-https://openrouter.ai/api/v1}
+
+      # --- Secrets (passed from shell env, never stored on disk) ---
+      - OPENAI_API_KEY=${OPENAI_API_KEY:?Set OPENAI_API_KEY in your terminal before running}
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY:?Set WEBUI_SECRET_KEY in your terminal before running}
+      - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD:?Set WEBUI_ADMIN_PASSWORD in your terminal before running}
+
+      # --- General (safe defaults, no secrets) ---
+      - WEBUI_NAME=${WEBUI_NAME:-AI Chat}
+      - WEBUI_URL=${WEBUI_URL:-http://localhost:3000}
+      - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL:-admin@example.com}
+      - WEBUI_ADMIN_NAME=${WEBUI_ADMIN_NAME:-Admin}
+      - ENABLE_SIGNUP=${ENABLE_SIGNUP:-false}
+      - DEFAULT_USER_ROLE=${DEFAULT_USER_ROLE:-pending}
+      - DEFAULT_MODELS=${DEFAULT_MODELS:-openrouter/auto}
+      - DEFAULT_PINNED_MODELS=${DEFAULT_PINNED_MODELS:-openrouter/auto}
+      - TASK_MODEL_EXTERNAL=${TASK_MODEL_EXTERNAL:-openrouter/auto}
+      - ENABLE_TITLE_GENERATION=true
+      - ENABLE_TAGS_GENERATION=true
+      - DEFAULT_LOCALE=en
 
 volumes:
   ollama_data:
